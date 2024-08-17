@@ -15,7 +15,7 @@ st.title('Create a Study Plan with EduVision')
 
 st.divider()
 
-st.subheader(':green[Fill out the fields to start generating]')
+st.subheader(':orange[Fill out the fields to start generating]')
 
 with st.form("Study Plan Form"):
    select_course = st.selectbox(
