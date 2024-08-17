@@ -39,6 +39,9 @@ with st.form("Study Plan Form"):
 
 st.divider()
 
+st.subheader('Upload a document to review it')
+
+
 def get_ppt_download_link(ppt_filename):
     with open(ppt_filename, "rb") as file:
         ppt_contents = file.read()

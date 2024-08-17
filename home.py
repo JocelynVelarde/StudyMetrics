@@ -22,14 +22,14 @@ col2.subheader("Generate Content")
 col2.divider()
 col2.write("- Generate power point presentations ready to download with a single propmt.")
 col2.write("- Generate lesson plans and study guides for your classes and export them into your Google or Outlook calendar.")
-col2.write("- Upload student's assesments and get insights on what might be wrong or what need improvement.")
+col2.write("- Upload student's assesments and get insights on what might be wrong or what needs improvement.")
 
 
 
 st.subheader("Virtual Metrics")
 st.divider()
 st.write("- Upload your zoom, teams or google meet recordings to get insights on your students' behavior and engagement.")
-st.write("- Select the session you want to analye and get graphics and reports.")
+st.write("- Select the session you want to analyze and get graphics and reports.")
 st.write("- You can also visualize your recorded video online while observing the metrics.")
 
 
