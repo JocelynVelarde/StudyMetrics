@@ -11,11 +11,11 @@ st.set_page_config(
 submit = False
 submit_photo = False
 
-st.title('Create a Study Plan with StudyMetrics')
+st.title('Generate, Check and Schedule your classes 📚')
 
 st.divider()
 
-st.subheader(':orange[Fill out the fields to start generating]')
+st.subheader('Fill out the fields to start generating')
 
 with st.form("Study Plan Form"):
    select_course = st.selectbox(
@@ -46,7 +46,7 @@ def get_ppt_download_link(ppt_filename):
     return f'<a href="data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,{b64_ppt}" download="{ppt_filename}">Download the PowerPoint Presentation</a>'
 
 st.divider()
-st.subheader(':orange[Type a content topic to start generating a PPT]')
+st.subheader('Type a content topic to start generating a PPT')
 
 with st.form("Study Plan Text Form"):
     topic = st.text_input("Enter the topic for your presentation:")
@@ -60,5 +60,4 @@ with st.form("Study Plan Text Form"):
 
         st.success("Presentation generated successfully!")
 
-        # Provide a download link for the generated PowerPoint presentation
         st.markdown(get_ppt_download_link(ppt_filename), unsafe_allow_html=True)
