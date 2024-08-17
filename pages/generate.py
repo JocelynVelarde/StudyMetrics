@@ -11,7 +11,7 @@ st.set_page_config(
 submit = False
 submit_photo = False
 
-st.title('Create a Study Plan with EduVision')
+st.title('Create a Study Plan with StudyMetrics')
 
 st.divider()
 
