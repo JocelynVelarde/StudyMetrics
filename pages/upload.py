@@ -1,4 +1,4 @@
-from altair import Config
+
 import streamlit as st
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
