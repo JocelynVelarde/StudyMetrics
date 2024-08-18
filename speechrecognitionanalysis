@@ -1,0 +1,96 @@
+import whisperx
+import gc
+from collections import defaultdict
+import matplotlib.pyplot as plt
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import streamlit as st
+import boto3
+import os
+import streamlit as st
+
+
+s3_client = boto3.client(
+        's3',
+        aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"],
+        aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
+        region_name=st.secrets["AWS_DEFAULT_REGION"],
+    )
+
+bucket_name = st.secrets["BUCKET_NAME"]
+
+response = s3_client.list_objects_v2(Bucket=bucket_name)
+
+if 'Contents' in response:
+    files = sorted(response['Contents'], key=lambda x: x['LastModified'], reverse=True)
+    most_recent_file = files[0]
+    file_key = most_recent_file['Key']
+
+    local_file_path = os.path.join('', os.path.basename(file_key))
+    s3_client.download_file(bucket_name, file_key, local_file_path)
+    print(f"Downloaded {file_key} to {local_file_path}")
+else:
+    print("No files found in the bucket.")
+
+# Download VADER lexicon
+nltk.download('vader_lexicon')
+
+device = "cuda"
+batch_size = 4
+compute_type = "float16"
+audio_file = local_file_path
+
+# Transcribe audio
+audio = whisperx.load_audio(audio_file)
+model = whisperx.load_model("base", device, compute_type=compute_type)
+result = model.transcribe(audio, batch_size=batch_size)
+
+# Clean up resources
+gc.collect()
+del model
+
+# Align whisper output
+model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=device)
+result = whisperx.align(result["segments"], model_a, metadata, audio, device, return_char_alignments=False)
+
+# Diarization
+diarize_model = whisperx.DiarizationPipeline(
+    use_auth_token=st.secrets['HUG_TOKEN'],
+    device=device
+)
+diarize_segments = diarize_model(audio, min_speakers=2, max_speakers=2)
+
+result = whisperx.assign_word_speakers(diarize_segments, result)
+
+# Count speaker occurrences and gather text per speaker
+speaker_counts = defaultdict(int)
+speaker_texts = defaultdict(str)
+
+for segment in result["segments"]:
+    speaker_id = segment.get("speaker", None)
+    if speaker_id is not None:
+        speaker_counts[speaker_id] += 1
+        speaker_texts[speaker_id] += " " + segment['text']
+
+# Plot speaker counts
+speakers = list(speaker_counts.keys())
+counts = list(speaker_counts.values())
+
+plt.figure(figsize=(8, 6))
+plt.bar(speakers, counts, color='skyblue')
+plt.xlabel('Speaker ID')
+plt.ylabel('Number of Speaking Turns')
+plt.title('Number of Speaking Turns per Speaker')
+plt.show()
+
+# Sentiment analysis
+sid = SentimentIntensityAnalyzer()
+
+for speaker_id, text in speaker_texts.items():
+    sentiment = sid.polarity_scores(text)
+    print(f"Speaker {speaker_id}:")
+    print(f"  Positive: {sentiment['pos']}")
+    print(f"  Neutral: {sentiment['neu']}")
+    print(f"  Negative: {sentiment['neg']}")
+    print(f"  Compound: {sentiment['compound']}")
+    print()
