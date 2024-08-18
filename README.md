@@ -8,6 +8,8 @@ We provide the ultimate tool for monitoring students in online and offline class
 
 - [@JocelynVelarde](https://github.com/JocelynVelarde)
 - [@DiegoRossi](https://github.com/)
+- [@RobertoPriego](https://github.com/rpribau)
+- [@OscarCardenas](https://github.com/oscar6647)
 
 ## Features
 ### Generate Content
