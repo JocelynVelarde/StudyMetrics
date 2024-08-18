@@ -3,7 +3,6 @@ import boto3
 import os
 import streamlit as st
 
-
 s3_client = boto3.client(
         's3',
         aws_access_key_id=st.secrets["AWS_ACCESS_KEY_ID"],
