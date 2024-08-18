@@ -1,3 +1,5 @@
 boto3
 openai
 python-pptx
+ics
+PyPDF2
