@@ -69,7 +69,7 @@ if uploaded_file is not None:
         max_tokens=500
     )
 
-    feedback = response.choices[0].message['content'].strip()
+    feedback =  response.choices[0].message.content
 
     st.subheader("Feedback on Assessment")
     st.write(feedback)
