@@ -1,7 +1,7 @@
 import streamlit as st
 import base64
 from algorithms.pptx_genai import generate_slide_titles, generate_slide_content, create_presentation
-from algorithms.simple_text import ask_chat
+from algorithms.simple_text import ask_chat, generate_ics_file
 from PyPDF2 import PdfReader
 import openai as oclient
 
@@ -28,6 +28,7 @@ with st.form("Study Plan Form"):
                                          "1 month", "2 months", "3 months"])
    select_hours_per_day = st.selectbox(
        "Select time per class", ["40 minutes", "1 hour", "2 hours", "3 hours"])
+   start_date = st.date_input("Start Date")
     
 
    
@@ -36,7 +37,11 @@ with st.form("Study Plan Form"):
    if submitted:
       submit = True
       st.warning("Generating study plan...")
-      st.write(ask_chat(select_course, select_course_level, select_duration_course, select_hours_per_day))
+      lesson_plan = ask_chat(select_course, select_course_level, select_duration_course, select_hours_per_day, start_date)
+      st.write(lesson_plan)
+      ics_file = generate_ics_file(lesson_plan, start_date)
+      with open(ics_file, 'rb') as f:
+       st.download_button(label="Download .ics file", data=f, file_name='lesson_plan.ics')
 
 
 st.divider()
